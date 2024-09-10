@@ -42,6 +42,8 @@ class ProfileDetailView(APIView):
         """
         data = {
             'description': request.data.get('description'),
+            'linkedin_url': request.data.get('linked_url'),
+            
         }
         
         profile, created = Profile.objects.get_or_create(user=request.user)
@@ -51,3 +53,23 @@ class ProfileDetailView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK if not created else status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
+class UserInfoApiView(APIView):
+    uthentication_classes = [JWTAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        profile = Profile.objects.get(user=user)
+        profile_serializer = ProfileSerializer(profile)
+        
+        data = {
+            "username": user.username,
+            "email": user.email,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "profile": profile_serializer.data  # Includes profile description
+        }
+        return Response(data)

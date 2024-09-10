@@ -4,6 +4,7 @@ from django.db import models
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     description = models.TextField(max_length=500, blank=True)
+    linkedin_url = models.TextField(max_length=500, blank=True)
 
     def __str__(self):
         return self.user.username
