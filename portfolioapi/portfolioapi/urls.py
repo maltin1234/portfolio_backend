@@ -19,14 +19,22 @@ from django.urls import re_path, include
 from portfolioapp import urls as todo_urls
 from django.conf.urls.static import static
 from django.conf import settings
-from django.contrib.auth import views as auth_views
 
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 
 urlpatterns = [
      re_path('admin/', admin.site.urls),
      re_path('api-auth/', include('rest_framework.urls')),
      re_path('todos/', include(todo_urls)),
+     re_path('users/', include('users.urls')),
+     re_path('api/auth', include('users.urls')),
+     re_path('api/token', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+     re_path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+
   
 ] 
 if settings.DEBUG: 
