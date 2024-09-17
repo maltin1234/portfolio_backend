@@ -1,68 +1,60 @@
-from rest_framework.views import APIView
+from venv import logger
+from rest_framework import generics, status, permissions
 from rest_framework.response import Response
-from rest_framework import status
-from rest_framework import permissions
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from .models import Todo
 from .serializers import TodoSerializer
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework import generics
 
-class TodoListApiView(APIView):
-    # Add permission to check if user is authenticated
+class TodoListApiView(generics.ListCreateAPIView):
+    """
+    List all todo items for the authenticated user or create a new todo.
+    """
+    serializer_class = TodoSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
-    # List all todos
-    def get(self, request, *args, **kwargs):
-        """
-        List all the todo items for the given requested user
-        """
-        todos = Todo.objects.filter(user=self.request.user)
-        serializer = TodoSerializer(todos, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    # Create a new todo
-    def post(self, request, *args, **kwargs):
-        """
-        Create a Todo with the given todo data
-        """
-        data = {
-            'title': request.data.get('title'),
-            'completed': request.data.get('completed'),
-            'project_description': request.data.get('project_description'),
-            'image': request.FILES.get('image'),  # Use request.FILES for file uploads
-        }
-    
-        serializer = TodoSerializer(data=data)  # Pass the data here
-
-        if serializer.is_valid():
-            # Save the instance and associate the user
-            serializer.save(user=self.request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class UserTodosSearchApiView(generics.ListAPIView):
-    serializer_class = TodoSerializer  # Correct attribute name
-    
     def get_queryset(self):
         """
-        This view should return a list of all todos for
-        the user as determined by the username portion of the URL.
+        Return a list of all todos for the authenticated user.
         """
-        username = self.kwargs.get('username')
-        if not username:
-            return Todo.objects.none()
-        
-        return Todo.objects.filter(user__username=username)
+        return Todo.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        """
+        Save the new todo item with the authenticated user.
+        """
+        serializer.save(user=self.request.user)
+
+class TodoDetailApiView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, update or delete a todo item.
+    """
+    queryset = Todo.objects.all()
+    serializer_class = TodoSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        """
+        Filter todos to ensure that users can only access their own todos.
+        """
+        return Todo.objects.filter(user=self.request.user)
     
-    def get(self, request, *args, **kwargs):
+
+
+class UserTodosSearchApiView(generics.ListAPIView):
+    serializer_class = TodoSerializer
+
+    def get_queryset(self):
         """
-        Override the get method to handle potential serializer errors.
+        Optionally restricts the returned todos to a given user,
+        by filtering against a `username` query parameter in the URL.
         """
-        queryset = self.get_queryset()
-        if not queryset.exists():
-            return Response({"detail": "No todos found for this user."}, status=status.HTTP_404_NOT_FOUND)
-        
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        queryset = Todo.objects.all()
+        username = self.request.query_params.get('user')  # Get the 'user' query param, assuming it's the username
+
+        if username is not None:
+            # Filter by the 'username' field of the related User model
+            queryset = queryset.filter(user__username=username)
+
+        return queryset

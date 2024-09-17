@@ -42,8 +42,6 @@ class ProfileDetailView(APIView):
         """
         data = {
             'description': request.data.get('description'),
-            'linkedin_url': request.data.get('linked_url'),
-            
         }
         
         profile, created = Profile.objects.get_or_create(user=request.user)
@@ -55,9 +53,7 @@ class ProfileDetailView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
-
 class UserInfoApiView(APIView):
-    uthentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
