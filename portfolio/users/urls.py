@@ -1,9 +1,11 @@
-from django.urls import re_path
-from .views import ProfileDetailView, RegisterView, UserInfoApiView
+from django.urls import re_path, include
+from rest_framework.routers import DefaultRouter
+from .views import UserViewSet
 
+# If using ModelViewSet
+router = DefaultRouter()
+router.register('users', UserViewSet, basename='users')
 
 urlpatterns = [
-    re_path('register/', RegisterView.as_view(), name='register'),
-    re_path('profile/', ProfileDetailView.as_view(), name='profile'),
-    re_path('userinfo/', UserInfoApiView.as_view(), name='userinfo'),
+    re_path('', include(router.urls)),
 ]

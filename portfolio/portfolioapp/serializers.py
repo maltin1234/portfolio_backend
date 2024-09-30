@@ -1,12 +1,9 @@
 # todo/todo_api/serializers.py
 from rest_framework import serializers
 from .models import Todo
-from users.models import Profile
+from django.contrib.auth import get_user_model
 
-class ProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Profile
-        fields = ['description']
+CustomUser = get_user_model()
 
 class TodoSerializer(serializers.ModelSerializer):
     class Meta:

@@ -31,6 +31,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -52,6 +53,9 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
+
+AUTHENTICATION_BACKENDS = ['users.backend.EmailBackend']
+AUTH_USER_MODEL ='users.CustomUser'
 
 # Optional: Configure the token lifetime or other settings
 from datetime import timedelta

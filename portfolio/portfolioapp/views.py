@@ -4,6 +4,9 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .models import Todo
 from .serializers import TodoSerializer
+from django.contrib.auth import get_user_model
+
+CustomUser = get_user_model()
 
 class TodoListApiView(generics.ListCreateAPIView):
     """
