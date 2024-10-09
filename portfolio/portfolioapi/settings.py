@@ -54,7 +54,8 @@ REST_FRAMEWORK = {
     ),
 }
 
-AUTHENTICATION_BACKENDS = ['users.backend.EmailBackend']
+AUTHENTICATION_BACKENDS = ['users.backend.EmailBackend',
+                           'django.contrib.auth.backends.ModelBackend']
 AUTH_USER_MODEL ='users.CustomUser'
 
 # Optional: Configure the token lifetime or other settings
