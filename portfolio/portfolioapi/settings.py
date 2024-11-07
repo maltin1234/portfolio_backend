@@ -68,7 +68,8 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
 }
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3030',
+    'http://localhost:3000',
+    'http://localhost:8000',
 ]
 CORS_ALLOW_METHODS = (
     "DELETE",
@@ -86,6 +87,8 @@ CORS_ALLOW_HEADERS = (
     "x-csrftoken",
     "x-requested-with",
 )
+CORS_ALLOW_ALL_ORIGINS = True
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
