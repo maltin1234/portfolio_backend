@@ -1,12 +1,13 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
+
+
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth import authenticate
-
+from django.core.validators import MinValueValidator, MaxValueValidator
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
-
+from .models import Rating
 # Use the custom user model
 CustomUser = get_user_model()
 
@@ -54,7 +55,26 @@ class RegisterSerializer(serializers.ModelSerializer):
     
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = CustomUser
         fields = ('username', 'email', 'first_name', 'last_name', 'description', 'linkedin_url')
         read_only_fields = ('username', 'email')  # You can mark these fields as read-only for updates
+
+class RatingSerializer(serializers.ModelSerializer):
+   
+    rating = serializers.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)]
+    )
+    class Meta:
+        model = Rating
+        fields = ('id', 'rating', 'feedback', 'created_at', )  # Include all relevant fields
+
+        
+
+
+    def validate_rating(self, value):
+        if value < 1 or value > 5:
+            raise serializers.ValidationError("Rating must be between 1 and 5.")
+        return value
+    

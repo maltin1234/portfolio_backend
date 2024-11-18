@@ -20,7 +20,7 @@ urlpatterns = [
     re_path('api/todos/', include('portfolioapp.urls')),  # Don't forget to include the trailing slash
     re_path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     re_path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    
+  
     # Include the router URLs for user-related views
     re_path('', include(router.urls)),
 ]
