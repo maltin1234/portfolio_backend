@@ -19,7 +19,7 @@ class Todo(models.Model):
     )
     '''
     image = models.ImageField(upload_to='images/')
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=True, null=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="todos")
 
     def __str__(self):
         return self.title

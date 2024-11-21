@@ -5,6 +5,9 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
+from .models import CustomUser
+from .models import Rating
+from django.contrib import admin
 
 class CustomAdminSite(AdminSite):
     login_form = AuthenticationForm
@@ -23,3 +26,5 @@ class CustomAdminSite(AdminSite):
 
 # Register your custom admin site
 admin_site = CustomAdminSite(name="admin")
+admin.site.register(Rating)
+admin.site.register(CustomUser)

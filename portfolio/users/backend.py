@@ -9,23 +9,21 @@ class EmailBackend(ModelBackend):
     def authenticate(self, request, username=None, email=None, password=None, **kwargs):
         UserModel = get_user_model()
 
-        # Check if email is provided
+        # If email is not provided, fallback for username (used in admin login)
+        if not email:
+            email = username  # Admin login passes 'username'
+
         if not email:
             raise AuthenticationFailed("Email is required.")
 
-        # Log the input username (which is expected to be the email)
-        print(f"Attempting to authenticate user with email: {email}")
-
         try:
-            # Assume `username` is actually the email
+            # Get the user by email
             user = UserModel.objects.get(email=email)
-            print(f"User found: {user}")
         except UserModel.DoesNotExist:
             raise AuthenticationFailed("No active account found with the given credentials.")
 
         # Check the password
         if user.check_password(password):
-            print("Password is correct.")
             return user
         else:
             raise AuthenticationFailed("Incorrect password.")

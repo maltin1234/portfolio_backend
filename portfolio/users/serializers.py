@@ -1,5 +1,5 @@
 from rest_framework import serializers
-
+from portfolioapp.serializers import TodoSerializer
 
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth import authenticate
@@ -8,6 +8,7 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from .models import Rating
+
 # Use the custom user model
 CustomUser = get_user_model()
 
@@ -53,14 +54,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
     
-
-class UserProfileSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = CustomUser
-        fields = ('username', 'email', 'first_name', 'last_name', 'description', 'linkedin_url')
-        read_only_fields = ('username', 'email')  # You can mark these fields as read-only for updates
-
 class RatingSerializer(serializers.ModelSerializer):
    
     rating = serializers.IntegerField(
@@ -78,3 +71,13 @@ class RatingSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Rating must be between 1 and 5.")
         return value
     
+class UserProfileSerializer(serializers.ModelSerializer):
+    todos = TodoSerializer(many=True, read_only=True)
+    ratings = RatingSerializer(many=True, read_only=True)
+    
+    class Meta:
+        model = CustomUser
+      
+        fields = ('username', 'email', 'first_name', 'last_name', 'description', 'linkedin_url','ratings','todos')
+        read_only_fields = ('username', 'email')  # You can mark these fields as read-only for updates
+
