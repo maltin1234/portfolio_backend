@@ -8,6 +8,6 @@ CustomUser = get_user_model()
 class TodoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Todo
-        fields = ["title", "completed","image", "project_description", "created" ]
+        fields = ["title", "completed","image", "project_description", "created","link_url","github_url","tags" ]
         
      

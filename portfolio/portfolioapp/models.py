@@ -6,9 +6,19 @@ from django.conf import settings
 
 class Todo(models.Model):
     title = models.CharField(max_length=100)
-    project_description = models.CharField(max_length=1000)
+    project_description = models.CharField(max_length=600)
     created = models.DateTimeField(auto_now_add=True)
     completed = models.BooleanField(default=False)
+    link_url =  models.CharField(max_length=600)
+    github_url = models.CharField(max_length=600)
+    tags = ArrayField(
+        models.CharField(
+            models.CharField(max_length=5, blank=True),
+       
+
+        ),
+    
+    )
     '''
     category = ArrayField(
         ArrayField(
