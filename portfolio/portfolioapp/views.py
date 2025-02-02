@@ -1,19 +1,21 @@
 from venv import logger
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
-from rest_framework_simplejwt.authentication import JWTAuthentication
+# from rest_framework_simplejwt.authentication import JWTAuthentication
 from .models import Todo
 from .serializers import TodoSerializer
 from django.contrib.auth import get_user_model
 
-CustomUser = get_user_model()
+from django.http import HttpResponse
+#CustomUser = get_user_model()
+NewUser = get_user_model()
 
 class TodoListApiView(generics.ListCreateAPIView):
     """
     List all todo items for the authenticated user or create a new todo.
     """
     serializer_class = TodoSerializer
-    authentication_classes = [JWTAuthentication]
+    # authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
@@ -34,7 +36,7 @@ class TodoDetailApiView(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = Todo.objects.all()
     serializer_class = TodoSerializer
-    authentication_classes = [JWTAuthentication]
+    # authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):

@@ -1,34 +1,45 @@
-from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 
 
-from .managers import CustomUserManager  # Import the custom manager
+from django.contrib.auth.models import BaseUserManager
 
-class CustomUser(AbstractUser):
-    email = models.EmailField(unique=True)  # Make email unique
-    description = models.TextField(max_length=500, blank=True)
-    linkedin_url = models.TextField(max_length=500, blank=True)
-    
-    # first_name and last_name are already part of AbstractUser, no need to redefine them
-    
-    # Use email as the unique identifier for authentication, but keep username
-    USERNAME_FIELD = 'email'  # Email will be used as the login field
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']  # Username, first name, and last name are still required
-    objects = CustomUserManager()
-    
+class CustomAccountManager(BaseUserManager):
+    def create_user(self, email, first_name=None, password=None, **extra_fields):
+        if not email:
+            raise ValueError('Users must have an email address')
+
+        email = self.normalize_email(email)
+        extra_fields.setdefault("is_active", True)
+
+        user = self.model(email=email, first_name=first_name, **extra_fields)
+
+        if password:
+            user.set_password(password)  # Only set password if provided
+        else:
+            user.set_unusable_password()  # This makes sure the user cannot log in with a password
+
+        user.save(using=self._db)
+        return user
+
+
+class NewUser(AbstractBaseUser, PermissionsMixin):
+
+    email = models.EmailField(_('email address'), unique=True)
+    username = models.CharField(max_length=150, unique=True)
+    first_name = models.CharField(max_length=150, blank=True)
+    start_date = models.DateTimeField(default=timezone.now)
+    about = models.TextField(_(
+        'about'), max_length=500, blank=True)
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+
+    objects = CustomAccountManager()
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username', 'first_name']
+
     def __str__(self):
-        return self.email  # Or use self.username if you prefer
-    
-
-class Rating(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="ratings")
-    rating = models.PositiveIntegerField()  # Ensure the rating is positive
-    feedback = models.TextField(blank=True, null=True)  # Optional feedback
-    created_at = models.DateTimeField(auto_now_add=True)  # Timestamp for when the rating was created
-
-    class Meta:
-        unique_together = ('user', 'created_at')  # Ensure no duplicate ratings at the same time
-        ordering = ['-created_at']  # Sort by newest ratings first
-
-    def __str__(self):
-        return f"{self.user.email} - {self.rating}"
+        return self.username

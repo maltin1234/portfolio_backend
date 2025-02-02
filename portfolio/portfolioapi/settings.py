@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-y5u8sbwn%3hz5l_zy=$!x=t-4$qb^6iaz0ay^-v3r3lt6+4i4u
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "backend"]
 
 
 
@@ -43,30 +43,85 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework_simplejwt',
+    # 'rest_framework_simplejwt',
+    
+    'rest_framework.authtoken',
     'portfolioapp',
-    'users'
+    'users',
+      # Oauth
+    'oauth2_provider',
+    'social_django',
+    'drf_social_oauth2',
+    # 'allauth',
+    # 'allauth.account',
+    # 'allauth.socialaccount',
+    # 'allauth.socialaccount.providers.github',
+    # 'dj_rest_auth'
+
+    
 ]
 # Add JWT authentication to the default authentication classes
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  # django-oauth-toolkit >= 1.0.0
+        'drf_social_oauth2.authentication.SocialAuthentication', 
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # 'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+        # 'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+    ),
+       'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',  # Temporarily allow any request
     ),
 }
+REST_AUTH = {
+    "USE_JWT": True,
+    "JWT_AUTH_COOKIE": "_auth",  # Name of access token cookie
+    "JWT_AUTH_REFRESH_COOKIE": "_refresh", # Name of refresh token cookie
+    "JWT_AUTH_HTTPONLY": False,  # Makes sure refresh token is sent
+}
+REST_USE_JWT = True
 
-AUTHENTICATION_BACKENDS = ['users.backend.EmailBackend',
-                           'django.contrib.auth.backends.ModelBackend']
-AUTH_USER_MODEL ='users.CustomUser'
+# AUTHENTICATION_BACKENDS = [
+#       'social_core.backends.github.GithubOAuth2',
+#        'drf_social_oauth2.backends.DjangoOAuth2',
+#    # 'users.backend.EmailBackend',
+# #    "allauth.account.auth_backends.AuthenticationBackend",
+#                            'django.contrib.auth.backends.ModelBackend']
+# AUTH_USER_MODEL ='users.CustomUser'
+AUTH_USER_MODEL = "users.NewUser"
+
+
+AUTHENTICATION_BACKENDS = (
+    'drf_social_oauth2.backends.DjangoOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+    
+)
+
+
+AUTHENTICATION_BACKENDS = (
+    # Others auth providers (e.g. Google, Facebook, etc.)
+    
+    # GitHub OAuth2
+    'social_core.backends.github.GithubOAuth2',
+
+    # drf_social_oauth2
+    'drf_social_oauth2.backends.DjangoOAuth2',
+
+    # Django default authentication backend
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+
 
 # Optional: Configure the token lifetime or other settings
 from datetime import timedelta
 
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'ROTATE_REFRESH_TOKENS': False,
-    'BLACKLIST_AFTER_ROTATION': True,
-}
+# SIMPLE_JWT = {
+#     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+#     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+#     'ROTATE_REFRESH_TOKENS': False,
+#     'BLACKLIST_AFTER_ROTATION': True,
+# }
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://localhost:8000',
@@ -91,15 +146,17 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 
 MIDDLEWARE = [
+    "django.middleware.csrf.CsrfViewMiddleware",
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # "allauth.account.middleware.AccountMiddleware",
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+  
+    
 ]
 
 ROOT_URLCONF = 'portfolioapi.urls'
@@ -115,6 +172,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -179,3 +238,41 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+SOCIAL_AUTH_GITHUB_KEY = 'YGE2k59Y9myR5ctwxozMvV2EEpHgWWaNwYito2rE'  # Replace with your GitHub Client ID
+SOCIAL_AUTH_GITHUB_SECRET = 'afsjyr4FbkkpZe2va3Ny30bt5yZhJymZtH82FE019Or20PQWQ3UUUTMvrYqFI8LOJRMm2hGAjlaNYr4b36j9JMSsJ6N7dkUrXd4GtYqCQADNgooDodHGIHgmJRCIcwjn'
+  # Replace with your GitHub Client Secret
+# SOCIAL_AUTH_GITHUB_SCOPE = ['user', 'repo']  # Adjust the scope as needed
+
+
+
+SOCIALACCOUNT_PROVIDERS = {
+    'github': {
+        # For each OAuth based provider, either add a ``SocialApp``
+        # (``socialaccount`` app) containing the required client
+        # credentials, or list them here:
+        'APP': {
+            'client_id': 'YGE2k59Y9myR5ctwxozMvV2EEpHgWWaNwYito2rE',
+            'secret': 'afsjyr4FbkkpZe2va3Ny30bt5yZhJymZtH82FE019Or20PQWQ3UUUTMvrYqFI8LOJRMm2hGAjlaNYr4b36j9JMSsJ6N7dkUrXd4GtYqCQADNgooDodHGIHgmJRCIcwjn',
+            'key': ''
+        }
+    }
+}
+DEBUG = True
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'django.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
