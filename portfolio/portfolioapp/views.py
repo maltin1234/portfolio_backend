@@ -8,7 +8,7 @@ from django.contrib.auth import get_user_model
 
 from django.http import HttpResponse
 #CustomUser = get_user_model()
-NewUser = get_user_model()
+CustomUser = get_user_model()
 
 class TodoListApiView(generics.ListCreateAPIView):
     """

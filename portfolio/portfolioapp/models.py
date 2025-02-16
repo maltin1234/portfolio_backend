@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 # from users.models import CustomUser
-from users.models import NewUser
+from users.models import CustomUser
 from django.conf import settings
 
 
@@ -30,7 +30,7 @@ class Todo(models.Model):
     )
     '''
     image = models.ImageField(upload_to='images/')
-    user = models.ForeignKey(NewUser, on_delete=models.CASCADE, related_name="todos")
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="todos")
     # "CustomUser"
     
     def __str__(self):

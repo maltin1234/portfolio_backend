@@ -4,7 +4,7 @@ from .models import Todo
 from django.contrib.auth import get_user_model
 
 #CustomUser = get_user_model()
-NewUser = get_user_model()
+CustomUser = get_user_model()
 class TodoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Todo
