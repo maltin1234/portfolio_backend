@@ -15,14 +15,15 @@ class TodoListApiView(generics.ListCreateAPIView):
     List all todo items for the authenticated user or create a new todo.
     """
     serializer_class = TodoSerializer
+    permission_classes = [permissions.AllowAny]  # Allow anyone (no auth required)
     # authentication_classes = [JWTAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+ 
 
     def get_queryset(self):
         """
         Return a list of all todos for the authenticated user.
         """
-        return Todo.objects.filter(user=self.request.user)
+        return Todo.objects.all()
 
     def perform_create(self, serializer):
         """
