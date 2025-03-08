@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from portfolioapp.serializers import TodoSerializer
+from portfolioapp.serializers import ProjectSerializer
 
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth import authenticate
@@ -72,12 +72,12 @@ class RatingSerializer(serializers.ModelSerializer):
         return value
     
 class UserProfileSerializer(serializers.ModelSerializer):
-    todos = TodoSerializer(many=True, read_only=True)
+    Projects = ProjectSerializer(many=True, read_only=True)
     ratings = RatingSerializer(many=True, read_only=True)
     
     class Meta:
         model = CustomUser
       
-        fields = ('username', 'email', 'first_name', 'last_name', 'description', 'linkedin_url','ratings','todos')
+        fields = ('username', 'email', 'first_name', 'last_name', 'description', 'linkedin_url','ratings','Projects')
         read_only_fields = ('username', 'email')  # You can mark these fields as read-only for updates
 

@@ -24,7 +24,7 @@ router = DefaultRouter()
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
-    path('api/todos/', include('portfolioapp.urls')),  # Don't forget to include the trailing slash
+    path('api/', include('portfolioapp.urls')),  # Don't forget to include the trailing slash
     # re_path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     # re_path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('auth/', include('drf_social_oauth2.urls', namespace='drf')),

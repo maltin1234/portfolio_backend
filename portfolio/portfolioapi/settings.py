@@ -70,7 +70,8 @@ REST_FRAMEWORK = {
         # 'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
     ),
        'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.AllowAny',  # Temporarily allow any request
+        'rest_framework.permissions.IsAuthenticated',  # Temporarily allow any request
+
     ),
 }
 

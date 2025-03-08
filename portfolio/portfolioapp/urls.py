@@ -1,14 +1,34 @@
 from django.urls import re_path
-from .views import TodoListApiView, TodoDetailApiView, UserTodosSearchApiView
+from .views import (
+    ProjectDeleteByIdApiView,
+    ProjectPublicListApiView,
+    ProjectListApiView,
+    ProjectDetailApiView,
+    ProjectSearchApiView,
+    ProjectUpdateByIdApiView,
+    ProjectUpdateByNameApiView,
+    ProjectDeleteByNameApiView,
+    ProjectCreateApiView,
+)
 
 urlpatterns = [
-    # URL for listing and creating todos
-    re_path('todos/', TodoListApiView.as_view(), name='todo_list_create'),
+    # Public: Get all projects (No authentication required)
+    re_path('projects/public', ProjectPublicListApiView.as_view(), name='public-projects'),
 
-    # URL for retrieving, updating, and deleting a specific todo
-    re_path('^tod/(?P<pk>\d+)/$', TodoDetailApiView.as_view(), name='todo_detail'),
+    # Authenticated User: List and Create projects
+    re_path('user/projects/', ProjectListApiView.as_view(), name='user-projects'),
 
-    # URL for searching todos by username
-    re_path('todotitle', UserTodosSearchApiView.as_view()),
-]
+    # Search projects by title (No authentication required)
+    re_path('projects/search/', ProjectSearchApiView.as_view(), name='search-projects'),
 
+    # Update project by name (Authenticated users only)
+    re_path('projects/update/', ProjectUpdateByNameApiView.as_view(), name='update-project-by-name'),
+
+    # Delete project by name (Authenticated users only)
+ 
+    re_path('projects/delete/<int:id>/', ProjectDeleteByIdApiView.as_view(), name='delete-project-by-id'),
+    # Create a project by user (Authenticated users only)
+    re_path('projects/create/', ProjectCreateApiView.as_view(), name='create-project'),
+    
+    re_path('projects/update/<int:id>/', ProjectUpdateByIdApiView.as_view(), name='update-project-by-id'),
+]  
