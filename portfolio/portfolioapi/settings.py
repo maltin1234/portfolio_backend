@@ -232,7 +232,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SOCIAL_AUTH_GITHUB_KEY ='Iv23liQ6RhNw1vQlgcms'  # Replace with your GitHub Client ID
-SOCIAL_AUTH_GITHUB_SECRET ='2ddf89c86193009ebb8c0846c885e10989639bfa'
+
   # Replace with your GitHub Client Secret
 # SOCIAL_AUTH_GITHUB_SCOPE = ['user', 'repo']  # Adjust the scope as needed
 
