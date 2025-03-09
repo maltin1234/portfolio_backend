@@ -12,10 +12,17 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+import environ
+
+
+ # Load .env file
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+# Initialize environment variables
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))  
 
 MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
@@ -231,8 +238,8 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-SOCIAL_AUTH_GITHUB_KEY ='Iv23liQ6RhNw1vQlgcms'  # Replace with your GitHub Client ID
-
+SOCIAL_AUTH_GITHUB_KEY = env("GITHUB_CLIENT_ID")  # Replace with your GitHub Client ID
+SOCIAL_AUTH_GITHUB_SECRET =  env("GITHUB_CLIENT_SECRET")
   # Replace with your GitHub Client Secret
 # SOCIAL_AUTH_GITHUB_SCOPE = ['user', 'repo']  # Adjust the scope as needed
 
@@ -250,7 +257,7 @@ SOCIAL_AUTH_GITHUB_KEY ='Iv23liQ6RhNw1vQlgcms'  # Replace with your GitHub Clien
 #         }
 #     }
 # }
-DEBUG = True
+DEBUG = False
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
