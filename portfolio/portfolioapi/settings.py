@@ -10,22 +10,31 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
-from pathlib import Path
 import os
+from pathlib import Path
 import environ
 
-
- # Load .env file
-
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-# Initialize environment variables
-env = environ.Env()
-environ.Env.read_env(os.path.join(BASE_DIR, ".env"))  
 
-MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = "/static/"
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),  # This is for development
+]
+
+# Only needed in production when DEBUG=False
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")  # Collects static files for deployment
+
+# Media files (uploaded by users)
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+# Load environment variables
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
+
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -51,7 +60,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     # 'rest_framework_simplejwt',
-    
     'rest_framework.authtoken',
     'portfolioapp',
     'users',
@@ -77,7 +85,7 @@ REST_FRAMEWORK = {
         # 'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
     ),
        'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',  # Temporarily allow any request
+        'rest_framework.permissions.AllowAny',  # Temporarily allow any request
 
     ),
 }
@@ -138,10 +146,12 @@ CORS_ALLOW_METHODS = (
 CORS_ALLOW_HEADERS = (
     "accept",
     "authorization",
+    "Authorization",
     "content-type",
     "user-agent",
     "x-csrftoken",
     "x-requested-with",
+    "bearer-access-token"
 )
 CORS_ALLOW_ALL_ORIGINS = True
 
@@ -257,22 +267,4 @@ SOCIAL_AUTH_GITHUB_SECRET =  env("GITHUB_CLIENT_SECRET")
 #         }
 #     }
 # }
-DEBUG = False
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'django.log',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-    },
-}
+

@@ -7,7 +7,7 @@ from .views import (
     ProjectSearchApiView,
     ProjectUpdateByIdApiView,
     ProjectUpdateByNameApiView,
-    ProjectDeleteByNameApiView,
+     ProjectDeleteByIdApiView,
     ProjectCreateApiView,
 )
 
@@ -16,7 +16,7 @@ urlpatterns = [
     re_path('projects/public', ProjectPublicListApiView.as_view(), name='public-projects'),
 
     # Authenticated User: List and Create projects
-    re_path('user/projects/', ProjectListApiView.as_view(), name='user-projects'),
+    re_path('pakistan', ProjectListApiView.as_view(), name='user-projects'),
 
     # Search projects by title (No authentication required)
     re_path('projects/search/', ProjectSearchApiView.as_view(), name='search-projects'),

@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
     path('api/', include('portfolioapp.urls')),  # Don't forget to include the trailing slash
+    path('users/', include('users.urls')),  # Don't forget to include the trailing slash
     # re_path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     # re_path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('auth/', include('drf_social_oauth2.urls', namespace='drf')),
@@ -39,8 +40,9 @@ urlpatterns = [
   
     # path('secret', secret_page, name='secret'),  # Fix the URL pattern and reference the view
     # Include the router URLs for user-related views
-    path('', include(router.urls)),  
+    # path('', include(router.urls)),  
 ]
+
 
 # Serve media files in development mode
 if settings.DEBUG:
