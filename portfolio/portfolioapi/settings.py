@@ -63,10 +63,14 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'portfolioapp',
     'users',
+   
       # Oauth
     'oauth2_provider',
     'social_django',
     'drf_social_oauth2',
+     'userprofile',
+     'jobs',
+     'django_filters',
     # 'allauth',
     # 'allauth.account',
     # 'allauth.socialaccount',
@@ -88,6 +92,13 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',  # Temporarily allow any request
 
     ),
+     
+      'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+    ]
+
 }
 
 AUTHENTICATION_BACKENDS = (

@@ -1,4 +1,10 @@
 from django.urls import re_path
+# users/urls.py
+from django.urls import path
+
+
+
+    
 from .views import (
     ProjectDeleteByIdApiView,
     ProjectPublicListApiView,
@@ -30,5 +36,5 @@ urlpatterns = [
     # Create a project by user (Authenticated users only)
     re_path('projects/create/', ProjectCreateApiView.as_view(), name='create-project'),
     
-    re_path('projects/update/<int:id>/', ProjectUpdateByIdApiView.as_view(), name='update-project-by-id'),
+    re_path('projects/update/<int:id>/', ProjectUpdateByIdApiView.as_view(), name='update-project-by-id'), 
 ]  

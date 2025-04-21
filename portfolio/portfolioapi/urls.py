@@ -11,13 +11,14 @@ from rest_framework.routers import DefaultRouter
 from django.contrib import admin
 from django.urls import include, path
 # from users.views import UserViewSet, secret_page  # Import the secret_page view
-
+from jobs.urls import router_jobs as jobs_router
 
 
 
 
 # Initialize the router and register your viewset
 router = DefaultRouter()
+router.registry.extend(jobs_router.registry)
 # router.register('users', UserViewSet, basename='users')
 
 # Merged urlpatterns, making sure to include both sets of routes
@@ -26,9 +27,11 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     path('api/', include('portfolioapp.urls')),  # Don't forget to include the trailing slash
     path('users/', include('users.urls')),  # Don't forget to include the trailing slash
+       path('kosovo/', include('userprofile.urls')), 
     # re_path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     # re_path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('auth/', include('drf_social_oauth2.urls', namespace='drf')),
+    path('api/', include(router.urls)), 
    
 
     #####################
